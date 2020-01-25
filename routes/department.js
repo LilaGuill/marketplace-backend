@@ -15,7 +15,7 @@ router.post("/department/create", async (req, res) => {
   }
 });
 // Read
-router.get("/department/read", async (req, res) => {
+router.get("/department", async (req, res) => {
   try {
     const Departments = await Department.find();
     res.json(Departments);
