@@ -1,10 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const Category = require("../models/Category");
+const Product = require("../models/Product");
 
 router.post("/category/create", async (req, res) => {
-  console.log(req.fields);
-
   try {
     const newCategorie = new Category({
       title: req.fields.title,
@@ -39,8 +38,20 @@ router.post("/category/update/:id", async (req, res) => {
     res.status(400).json({ message: "an error occured" });
   }
 });
-router.post("/category/delete", (req, res) => {
-  res.json({ message: "Page category delete" });
+router.post("/category/delete", async (req, res) => {
+  try {
+    const deleteCategory = await Category.findById(req.query.id);
+    //supprimer tous les produits liès à cette catégorie
+    await Product.deleteMany({
+      category: req.query.id
+    });
+    // supprimer la catégorie
+    await deleteCategory.remove();
+
+    res.json(deleteCategory);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
 });
 
 module.exports = router;

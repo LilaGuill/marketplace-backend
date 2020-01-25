@@ -2,7 +2,6 @@ const express = require("express");
 
 const isFiltered = (req, res, next) => {
   filter = {};
-  console.log(req.query.priceMin);
 
   try {
     // filtre par titre
@@ -23,7 +22,6 @@ const isFiltered = (req, res, next) => {
     if (req.query.category) {
       filter.category = req.query.category;
     }
-    console.log(("fiter:", filter));
 
     return next();
   } catch (error) {

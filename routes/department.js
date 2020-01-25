@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const Department = require("../models/Department");
-
+const Category = require("../models/Category");
+const Product = require("../models/Product");
 // Create
 router.post("/department/create", async (req, res) => {
   try {
@@ -43,15 +44,24 @@ router.post("/department/update", async (req, res) => {
 //Delete
 router.post("/department/delete", async (req, res) => {
   try {
-    const departmentToDelete = await Department.findById(req.fields.id);
-    if (departmentToDelete) {
-      await departmentToDelete.remove();
-      res.json({ message: "Department Delete" });
-    } else {
-      res.json({ message: "Department not found" });
+    //filtre toutes les catégories du departement
+    const categoryToDelete = await Category.find({
+      department: req.query.id
+    });
+
+    // supprime tous les produits de chaque catégorie
+    for (let i = 0; i < categoryToDelete.length; i++) {
+      await Product.deleteMany({ category: categoryToDelete[i]._id });
     }
+    //supprime les catégories de ce département
+    await Category.deleteMany({ department: req.query.id });
+    // supprime le department
+    const departmentToDelete = await Department.findById(req.query.id);
+    //supprime le department
+    await departmentToDelete.remove();
+    res.json({ message: "department deleted" });
   } catch (error) {
-    res.status(400).json({ message: "An error occured" });
+    res.status(400).json({ message: error.message });
   }
 });
 module.exports = router;
