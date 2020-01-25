@@ -1,4 +1,4 @@
-const mongoose = require("mongooses");
+const mongoose = require("mongoose");
 
 const Category = mongoose.model("Category", {
   title: String,
