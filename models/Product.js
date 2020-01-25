@@ -9,3 +9,5 @@ const Product = mongoose.model("Product", {
     ref: "Category"
   }
 });
+
+module.exports = Product;
