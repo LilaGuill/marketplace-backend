@@ -23,13 +23,17 @@ router.get("/product", isFiltered, async (req, res) => {
   try {
     let allProduct = "";
     if (filter) {
-      allProduct = Product.find(filter).populate({
-        path: "category"
-      });
+      allProduct = Product.find(filter)
+        .populate({
+          path: "category"
+        })
+        .populate("reviews");
     } else {
-      allProduct = Product.find().populate({
-        path: "category"
-      });
+      allProduct = Product.find()
+        .populate({
+          path: "category"
+        })
+        .populate("reviews");
     }
     if (req.query.sort === "price-asc") {
       allProduct.sort({ price: 1 });
@@ -38,6 +42,18 @@ router.get("/product", isFiltered, async (req, res) => {
       allProduct.sort({ price: -1 });
     }
 
+    if (req.query.sort === "rating-asc") {
+      allProduct.sort({ averageRating: 1 });
+    }
+    if (req.query.sort === "rating-desc") {
+      allProduct.sort({ averageRating: -1 });
+    }
+
+    if (req.query.page) {
+      const page = req.query.page;
+      const limit = 20;
+      allProduct.limit(limit).skip(limit * (page - 1));
+    }
     const products = await allProduct;
 
     res.json(products);
@@ -49,19 +65,10 @@ router.get("/product", isFiltered, async (req, res) => {
 router.post("/product/update", async (req, res) => {
   try {
     const updateProduct = await Product.findById(req.query.id);
-
-    if (req.fields.title) {
-      updateProduct.title = req.fields.title;
-    }
-    if (req.fields.price) {
-      updateProduct.price = req.fields.price;
-    }
-    if (req.fields.description) {
-      updateProduct.description = req.fields.description;
-    }
-    if (req.fields.category) {
-      updateProduct.category = req.fields.category;
-    }
+    updateProduct.title = req.fields.title;
+    updateProduct.price = req.fields.price;
+    updateProduct.description = req.fields.description;
+    updateProduct.category = req.fields.category;
 
     await updateProduct.save();
     res.json(updateProduct);
