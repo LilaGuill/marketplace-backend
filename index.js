@@ -13,10 +13,14 @@ mongoose.connect("mongodb://localhost/marketplace", {
 const category = require("./routes/category");
 const department = require("./routes/department");
 const product = require("./routes/product");
+const user = require("./routes/user");
+const review = require("./routes/review");
 
 app.use(category);
 app.use(department);
 app.use(product);
+app.use(user);
+app.use(review);
 
 app.all("*", (req, res) => {
   res.status(401).json({ message: "Page not found" });
