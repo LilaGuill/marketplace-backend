@@ -28,7 +28,6 @@ router.get("/user", async (req, res) => {
 router.post("/user/update", async (req, res) => {
   try {
     const updateUser = await User.findOne({ _id: req.query.id });
-    console.log(updateUser);
 
     updateUser.username = req.fields.username;
     updateUser.email = req.fields.email;
