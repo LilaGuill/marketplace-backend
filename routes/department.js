@@ -12,7 +12,7 @@ router.post("/department/create", async (req, res) => {
     await newDepartment.save();
     res.json(newDepartment);
   } catch (error) {
-    res.status(400).json({ message: "An error occured" });
+    res.status(400).json({ message: error.message });
   }
 });
 // Read

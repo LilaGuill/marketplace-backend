@@ -13,7 +13,7 @@ router.post("/review/create", async (req, res) => {
       user: req.fields.user
     });
     await newReview.save();
-    //ajoute la review de la collection product
+    //Ajoute la review de la collection product
     const product = await Product.findById(req.fields.product);
     if (product.reviews === undefined) {
       product.reviews = [];
@@ -24,6 +24,15 @@ router.post("/review/create", async (req, res) => {
 
     await product.save();
     res.json(product);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+//Read
+router.get("/review", async (req, res) => {
+  try {
+    const reviews = await Review.find().populate();
+    res.json(reviews);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
